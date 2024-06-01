@@ -71,6 +71,8 @@ def bcp(
     # auth
     if creds.with_krb_auth:
         auth = ["-T"]
+    if creds.azure_entra_auth:
+        auth = ["-G"]
     else:
         auth = ["-U", quote_this(creds.username), "-P", quote_this(creds.password)]
     if creds.odbc_kwargs:
