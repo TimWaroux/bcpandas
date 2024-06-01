@@ -186,7 +186,7 @@ class SqlCreds:
 
 class SqlCredsAd(SqlCreds):
     @classmethod
-    def from_engine(cls, engine: sa.engine.base.Engine) -> "SqlCredsAd":
+    def from_engine(cls, engine: sa.engine.base.Engine) -> "SqlCreds":
         creds = super().from_engine(engine)
 
         creds.azure_entra_auth = True
