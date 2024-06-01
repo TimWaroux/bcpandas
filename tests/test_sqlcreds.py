@@ -29,6 +29,7 @@ import logging
 from sqlalchemy import create_engine, engine
 
 from bcpandas import SqlCreds
+from bcpandas.main import SqlCredsAd
 
 
 @lru_cache(maxsize=256)
@@ -478,3 +479,25 @@ def test_sql_creds_connection_for_odbc_kwargs_encrypt(sql_creds):
     df = pd.read_sql(con=creds.engine, sql="SELECT TOP 1 * FROM sys.objects")
 
     assert df.shape[0] == 1
+
+
+def test_sql_creds_ad():
+    """
+    Tests that the SqlCreds object can be created with Active Directory Authentication
+    """
+    params = quote_plus(
+        "Driver={ODBC Driver 99 for SQL Server};Server=tcp:test_server;Database=test_database;Authentication=ActiveDirectoryIntegrated;"
+    )
+    mssql_engine = create_engine("mssql+pyodbc:///?odbc_connect=%s" % params)
+    creds = SqlCredsAd.from_engine(mssql_engine)
+    assert creds.server == "test_server"
+    assert creds.database == "test_database"
+    assert creds.username == ""
+    assert creds.password == ""
+    assert creds.port == None
+    assert creds.azure_entra_auth is True
+    assert isinstance(creds.engine, engine.Connectable)
+    assert str(creds.engine.url) == _quote_engine_url(
+        "Driver={ODBC Driver 99 for SQL Server};Server=tcp:test_server;Database=test_database;Authentication=ActiveDirectoryIntegrated;"
+    )
+    # n.b. this is automatically appending tcp: and port 1433

@@ -75,6 +75,9 @@ class SqlCreds:
         self.port = port
         self.odbc_kwargs = odbc_kwargs
 
+        # Only supported through SqlCredsAd engine creation
+        self.azure_entra_auth = False
+
         if driver_version is None:
             all_drivers: List[str] = pyodbc.drivers()
             driver_candidates: List[str] = [
@@ -181,6 +184,15 @@ class SqlCreds:
 
     __str__ = __repr__
 
+class SqlCredsAd(SqlCreds):
+    @classmethod
+    def from_engine(cls, engine: sa.engine.base.Engine) -> "SqlCredsAd":
+        creds = super().from_engine(engine)
+
+        creds.azure_entra_auth = True
+        creds.with_krb_auth = False
+
+        return creds
 
 def _sql_item_exists(sql_type: str, schema: str, table_name: str, creds: SqlCreds) -> bool:
     _qry = dedent(
