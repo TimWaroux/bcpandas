@@ -3,7 +3,7 @@ import warnings
 
 import pkg_resources
 
-from bcpandas.main import SqlCreds, to_sql
+from bcpandas.main import SqlCreds, to_sql, SqlCredsAd
 from bcpandas.utils import bcp
 
 name = "bcpandas"
@@ -21,4 +21,4 @@ except FileNotFoundError:
 
 del run, DEVNULL, warnings
 
-__all__ = ["SqlCreds", "to_sql", "bcp"]
+__all__ = ["SqlCreds", "to_sql", "bcp", "SqlCredsAd"]
