@@ -185,6 +185,11 @@ class SqlCreds:
     __str__ = __repr__
 
 class SqlCredsAd(SqlCreds):
+    """
+    Azure Active Directory (AD) credential object for all SQL operations. 
+    Can only be created using the `from_engine` classmethod with an 
+    existing SQLAlchemy engine.
+    """
     @classmethod
     def from_engine(cls, engine: sa.engine.base.Engine) -> "SqlCreds":
         creds = super().from_engine(engine)
